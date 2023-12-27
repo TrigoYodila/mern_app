@@ -1,20 +1,13 @@
 const express = require('express')
+const { getEmployes,setEmploye, updateEmploye,deleteEmploye } = require("../controllers/employes")
 const router = express.Router()
 
-router.get('/', (req, res) => {
-    res.status(200).json({message:"Get employes"})
-})
+router.get('/', getEmployes)
 
-router.post('/', (req,res) => {
-    res.status(200).json({message:"Set employe"})
-})
+router.post('/', setEmploye)
 
-router.put('/:id', (req, res) => {
-    res.status(200).json({message:`Update empoloye ${req.params.id}`})
-})
+router.put('/:id', updateEmploye)
 
-router.delete('/:id', (req,res)=>{
-    res.status(200).json({message:`Delete employe ${req.params.id}`})
-})
+router.delete('/:id', deleteEmploye)
 
 module.exports = router
