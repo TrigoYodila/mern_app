@@ -78,7 +78,7 @@ const deleteEmploye = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
   
-  await employe.remove()
+  await employe.deleteOne()
 
   res.status(200).json({ id: req.params.id});
 });

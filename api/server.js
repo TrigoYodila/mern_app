@@ -18,6 +18,6 @@ app.use(express.urlencoded({extended:false}))
 app.use('/api/employes', employesRouter)
 app.use('/api/users', usersRouter)
 
-app.use(errorHandler)
+//app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server started on port ${port}`)) 
