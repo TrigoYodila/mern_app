@@ -1,8 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const Employe = require("../models/employes");
+const User = require("../models/user")
 
 const getEmployes = asyncHandler(async (req, res) => {
-  const employes = await Employe.find();
+  const employes = await Employe.find({user:req.user.id});
   res.status(200).json(employes);
 });
 
@@ -18,7 +19,8 @@ const setEmploye = asyncHandler(async (req, res) => {
     const employe = await Employe.create({
         name,
         lastname,
-        age
+        age,
+        user:req.user.id
     })
     res.status(200).json(employe)
 });
@@ -31,11 +33,26 @@ const updateEmploye = asyncHandler(async (req, res) => {
     throw new Error('Employe not found')
   }
 
-  const updateEmploye = await Employe.findByIdAndUpdate(req.params.id, req.body,{
+  //get connected user
+  const user = await User.findById(req.user.id)
+
+  // Check for user
+  if(!user){
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  // Make sure the logged in user matches the goal user
+  if(employe.user.toString() !== user.id){
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  const updatedEmploye = await Employe.findByIdAndUpdate(req.params.id, req.body,{
     new:true
   })
 
-  res.status(200).json(updateEmploye)
+  res.status(200).json(updatedEmploye)
 });
 
 const deleteEmploye = asyncHandler(async (req, res) => {
@@ -46,7 +63,22 @@ const deleteEmploye = asyncHandler(async (req, res) => {
       throw new Error('Employe not found')
     }
 
-    await employe.remove()
+    //get connected user
+  const user = await User.findById(req.user.id)
+
+  // Check for user
+  if(!user){
+    res.status(401)
+    throw new Error('User not found')
+  }
+
+  // Make sure the logged in user matches the goal user
+  if(employe.user.toString() !== user.id){
+    res.status(401)
+    throw new Error('User not found')
+  }
+  
+  await employe.remove()
 
   res.status(200).json({ id: req.params.id});
 });
